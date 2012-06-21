@@ -1,13 +1,12 @@
 # Install newrelic server monitoring
 
-execute "Add newrelic apt source" do
-  command "wget -O /etc/apt/sources.list.d/newrelic.list http://download.newrelic.com/debian/newrelic.list"
-  not_if { File.exist?('/etc/apt/sources.list.d/newrelic.list') }
-end
+apt_repository "newrelic" do
+  uri 'http://apt.newrelic.com/debian/'
+  key 'http://download.newrelic.com/548C16BF.gpg'
 
-execute "Add newrelic key to apt keyring" do
-  command "apt-key adv --keyserver hkp://subkeys.pgp.net --recv-keys 548C16BF && apt-get update"
-  not_if "gpg --keyring /etc/apt/trusted.gpg --list-keys | grep '1024D/548C16BF'"
+  distribution "newrelic"
+  components ['non-free']
+  action :add
 end
 
 package "newrelic-sysmond" do
